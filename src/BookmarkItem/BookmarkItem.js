@@ -11,55 +11,46 @@ function deleteBookmarkRequest(bookmarkId, callback) {
     method: 'DELETE',
     headers: {
       'content-type': 'application/json',
-      'authorization': `bearer ${config.API_KEY}`
-    }
+      authorization: `bearer ${config.API_KEY}`,
+    },
   })
-    .then(res => {
-      if (!res.ok)
-        return res.json().then(error => Promise.reject(error))
+    .then((res) => {
+      if (!res.ok) return res.json().then((error) => Promise.reject(error));
     })
-    .then(noContent => {
-      callback(bookmarkId)
+    .then((noContent) => {
+      callback(bookmarkId);
     })
-    .catch(error => {
-      console.error(error)
-    })
+    .catch((error) => {
+      console.error(error);
+    });
 }
 
 export default function BookmarkItem(props) {
   BookmarkItem.defaultProps = {
     rating: 1,
-    description: ""
+    description: '',
   };
 
   return (
     <BookmarksContext.Consumer>
       {(context) => (
-        <li className='BookmarkItem'>
-          <div className='BookmarkItem__row'>
-            <h3 className='BookmarkItem__title'>
-              <a
-                href={props.url}
-                target='_blank'
-                rel='noopener noreferrer'>
+        <li className="BookmarkItem">
+          <div className="BookmarkItem__row">
+            <h3 className="BookmarkItem__title">
+              <a href={props.url} target="_blank" rel="noopener noreferrer">
                 {props.title}
               </a>
             </h3>
             <Rating value={props.rating} />
           </div>
-          <p className='BookmarkItem__description'>
-            {props.description}
-          </p>
-          <div className='BookmarkItem__buttons'>
+          <p className="BookmarkItem__description">{props.description}</p>
+          <div className="BookmarkItem__buttons">
             <Link to={`/edit/${props.id}`}>Edit Bookmark</Link>
             <button
-              className='BookmarkItem__description'
+              className="BookmarkItem__description"
               onClick={() => {
-                deleteBookmarkRequest(
-                  props.id,
-                  context.deleteBookmark,
-                )
-              }} 
+                deleteBookmarkRequest(props.id, context.deleteBookmark);
+              }}
             >
               Delete
             </button>
@@ -67,7 +58,7 @@ export default function BookmarkItem(props) {
         </li>
       )}
     </BookmarksContext.Consumer>
-  )
+  );
 }
 
 BookmarkItem.propTypes = {
@@ -77,21 +68,27 @@ BookmarkItem.propTypes = {
     const prop = props[propName];
 
     // do the isRequired check
-    if(!prop) {
-      return new Error(`${propName} is required in ${componentName}. Validation Failed`);
+    if (!prop) {
+      return new Error(
+        `${propName} is required in ${componentName}. Validation Failed`
+      );
     }
 
     // check the type
     if (typeof prop != 'string') {
-      return new Error(`Invalid prop, ${propName} is expected to be a string in ${componentName}. ${typeof prop} found.`);
+      return new Error(
+        `Invalid prop, ${propName} is expected to be a string in ${componentName}. ${typeof prop} found.`
+      );
     }
 
     // do the custom check here
     // using a simple regex
     if (prop.length < 5 || !prop.match(new RegExp(/^https?:\/\//))) {
-      return new Error(`Invalid prop, ${propName} must be min length 5 and begin http(s)://. Validation Failed.`);
+      return new Error(
+        `Invalid prop, ${propName} must be min length 5 and begin http(s)://. Validation Failed.`
+      );
     }
   },
   rating: PropTypes.number,
-  description: PropTypes.string
+  description: PropTypes.string,
 };
