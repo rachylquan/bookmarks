@@ -4,6 +4,7 @@ import BookmarksContext from './BookmarksContext';
 import AddBookmark from './AddBookmark/AddBookmark';
 import BookmarkList from './BookmarkList/BookmarkList';
 import Nav from './Nav/Nav';
+import EditBookmark from './EditBookmark/EditBookmark';
 import config from './config';
 import './App.css';
 
@@ -43,14 +44,25 @@ class App extends Component {
         'Authorization': `Bearer ${config.API_KEY}`
       }
     })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(res.status)
-        }
-        return res.json()
-      })
-      .then(this.setBookmarks)
-      .catch(error => this.setState({ error }))
+    .then(res => {
+      if (!res.ok) {
+        return res.json().then(error => Promise.reject(error))
+      }
+      return res.json()
+    })
+    .then(this.setBookmarks)
+    .catch(error => {
+      console.error(error)
+      this.setState({ error })
+    })
+  }
+
+  updateBookmark = updatedBookmark => {
+    this.setState({
+      bookmarks: this.state.bookmarks.map(bm =>
+        (bm.id !== updatedBookmark.id) ? bm : updatedBookmark
+      )
+    })
   }
 
   render() {
@@ -58,6 +70,7 @@ class App extends Component {
       bookmarks: this.state.bookmarks,
       addBookmark: this.addBookmark,
       deleteBookmark: this.deleteBookmark,
+      updateBookmark: this.updateBookmark,
     }
     return (
       <main className='App'>
@@ -73,6 +86,10 @@ class App extends Component {
               exact
               path='/'
               component={BookmarkList}
+            />
+            <Route
+              path='/edit/:bookmarkId'
+              component={EditBookmark}
             />
           </div>
         </BookmarksContext.Provider>

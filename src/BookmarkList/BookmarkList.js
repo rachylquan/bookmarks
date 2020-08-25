@@ -8,6 +8,17 @@ class BookmarkList extends Component {
 
   static contextType = BookmarksContext;
 
+  static propTypes = {
+    bookmarks: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.oneOfType([
+          PropTypes.number,
+          PropTypes.string,
+        ]).isRequired,
+      })
+    )
+  };
+
   static defaultProps = {
     bookmarks: []
   };
