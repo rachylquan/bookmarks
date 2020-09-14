@@ -5,7 +5,6 @@ import BookmarksContext from '../BookmarksContext';
 import PropTypes from 'prop-types';
 import config from '../config';
 import './BookmarkItem.css';
-import EditBookmark from '../EditBookmark/EditBookmark';
 
 function deleteBookmarkRequest(bookmarkId, callback) {
   fetch(config.API_ENDPOINT + `/${bookmarkId}`, {
